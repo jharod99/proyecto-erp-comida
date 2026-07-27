@@ -56,7 +56,8 @@ function filtrarCategoria(cat) {
     
     const btns = document.querySelectorAll('#category-filters button');
     btns.forEach(btn => {
-        if (btn.innerText.includes(cat) || (cat === 'Todos' && btn.innerText.includes('Todos'))) {
+        const btnCat = btn.getAttribute('data-category');
+        if (btnCat === cat || (cat === 'Todos' && btnCat === 'Todos')) {
             btn.classList.add('active');
         } else {
             btn.classList.remove('active');
@@ -67,9 +68,14 @@ function filtrarCategoria(cat) {
 }
 
 function filtrarProductosPorCategoria(productos) {
-    if (!productos) return [];
-    if (categoriaSeleccionada === 'Todos') return productos;
-    return productos.filter(p => p.categoria.toLowerCase().includes(categoriaSeleccionada.toLowerCase()));
+    if (!productos || !Array.isArray(productos)) return [];
+    if (!categoriaSeleccionada || categoriaSeleccionada === 'Todos') return productos;
+    const catTarget = categoriaSeleccionada.toLowerCase();
+    return productos.filter(p => {
+        if (!p.categoria) return false;
+        const pCat = p.categoria.toLowerCase();
+        return pCat.includes(catTarget) || catTarget.includes(pCat);
+    });
 }
 
 function renderizarCatalogo(productos) {
