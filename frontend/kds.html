@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Proyecto Coconut - KDS Pantalla de Cocina</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body style="background-color: #060d19;">
+    <!-- HEADER LIMPIO COCINA KDS -->
+    <header class="navbar-clean">
+        <div class="brand-clean">
+            👨‍🍳 Cocina <span>KDS</span>
+        </div>
+        <div style="display: flex; gap: 6px;">
+            <button onclick="toggleStaffMenu()" class="nav-pill-btn" style="background: rgba(255,255,255,0.08); color: #fff; cursor: pointer;">
+                ⚙️ Paneles
+            </button>
+        </div>
+    </header>
+
+    <!-- MODAL NAVEGACIÓN -->
+    <div id="staff-access-modal" class="modal-overlay">
+        <div class="modal rounded-3xl bg-[#0d1527] border border-slate-800 p-5 text-center shadow-2xl">
+            <div class="text-3xl mb-1">⚙️</div>
+            <h3 class="text-base font-black text-white mb-1">Navegación del Sistema</h3>
+            <p class="text-slate-400 text-xs mb-3">Selecciona el módulo al que deseas ingresar:</p>
+            
+            <div class="space-y-2 mb-4 text-left" style="display: flex; flex-direction: column; gap: 8px;">
+                <a href="index.html" class="w-full bg-slate-900 hover:bg-slate-800 border border-slate-800 text-white font-extrabold py-3 px-3.5 rounded-2xl text-xs flex items-center justify-between no-underline">
+                    <span class="flex items-center gap-2">🍹 Menú de Jugos (Cliente)</span>
+                    <span class="text-slate-400">➔</span>
+                </a>
+                <a href="cajero.html" class="w-full bg-slate-900 hover:bg-slate-800 border border-slate-800 text-white font-extrabold py-3 px-3.5 rounded-2xl text-xs flex items-center justify-between no-underline">
+                    <span class="flex items-center gap-2">💳 Administración & Caja</span>
+                    <span class="text-slate-400">➔</span>
+                </a>
+                <a href="kds.html" class="w-full bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 font-extrabold py-3 px-3.5 rounded-2xl text-xs flex items-center justify-between no-underline">
+                    <span class="flex items-center gap-2">👨‍🍳 Pantalla de Cocina (KDS)</span>
+                    <span>✓ Activo</span>
+                </a>
+            </div>
+
+            <button onclick="cerrarStaffMenu()" class="w-full bg-slate-900 hover:bg-slate-800 text-slate-400 font-bold py-2.5 rounded-xl text-xs border border-slate-800" style="width: 100%;">
+                Cerrar
+            </button>
+        </div>
+    </div>
+
+    <main class="main-container">
+        <!-- BANNER PRODUCCIÓN POR LOTES MÓVIL -->
+        <section style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.12) 0%, rgba(245, 158, 11, 0.08) 100%); border: 1px solid rgba(16, 185, 129, 0.25); border-radius: 18px; padding: 1rem; margin-bottom: 1.25rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; gap: 8px;">
+                <div>
+                    <h2 style="font-size: 1.1rem; font-weight: 900; color: #fff;">🔥 PRODUCCIÓN EN LOTE</h2>
+                    <p style="color: #a7f3d0; font-size: 0.8rem;">Resumen acumulado para preparación rápida</p>
+                </div>
+                <span id="kds-total-pedidos-badge" class="badge badge-success" style="font-size: 0.85rem; padding: 4px 10px;">
+                    0 Pedidos
+                </span>
+            </div>
+
+            <div id="kds-batch-container" style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 0.85rem;">
+                <p style="color: var(--text-muted); font-size: 0.82rem;">Sin pedidos en cocina.</p>
+            </div>
+        </section>
+
+        <!-- SECCIÓN DE COMANDAS -->
+        <section>
+            <h2 style="font-size: 1.1rem; font-weight: 800; margin-bottom: 0.85rem; color: #fff; display: flex; align-items: center; gap: 6px;">
+                🥗 COMANDAS DE ENSAMBLE
+            </h2>
+
+            <div id="kds-orders-container" class="grid-responsive">
+                <p style="color: var(--text-muted); font-size: 0.85rem;">Cargando comandas...</p>
+            </div>
+        </section>
+    </main>
+
+    <script src="app.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            cargarKDS();
+            setInterval(cargarKDS, 3000);
+        });
+    </script>
+</body>
+</html>
