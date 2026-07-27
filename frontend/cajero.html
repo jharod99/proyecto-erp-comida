@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Proyecto Coconut - Panel de Caja & Stock</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- HEADER LIMPIO ADMIN Y CAJA -->
+    <header class="navbar-clean">
+        <div class="brand-clean">
+            🥥 Juguería <span>Coconut</span>
+        </div>
+        <div style="display: flex; gap: 6px;">
+            <button onclick="toggleStaffMenu()" class="nav-pill-btn" style="background: rgba(255,255,255,0.08); color: #fff; cursor: pointer;">
+                ⚙️ Paneles
+            </button>
+        </div>
+    </header>
+
+    <!-- MODAL NAVEGACIÓN -->
+    <div id="staff-access-modal" class="modal-overlay">
+        <div class="modal rounded-3xl bg-[#0d1527] border border-slate-800 p-5 text-center shadow-2xl">
+            <div class="text-3xl mb-1">⚙️</div>
+            <h3 class="text-base font-black text-white mb-1">Navegación del Sistema</h3>
+            <p class="text-slate-400 text-xs mb-3">Selecciona el módulo al que deseas ingresar:</p>
+            
+            <div class="space-y-2 mb-4 text-left" style="display: flex; flex-direction: column; gap: 8px;">
+                <a href="index.html" class="w-full bg-slate-900 hover:bg-slate-800 border border-slate-800 text-white font-extrabold py-3 px-3.5 rounded-2xl text-xs flex items-center justify-between no-underline">
+                    <span class="flex items-center gap-2">🍹 Menú de Jugos (Cliente)</span>
+                    <span class="text-slate-400">➔</span>
+                </a>
+                <a href="cajero.html" class="w-full bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 font-extrabold py-3 px-3.5 rounded-2xl text-xs flex items-center justify-between no-underline">
+                    <span class="flex items-center gap-2">💳 Administración & Caja</span>
+                    <span>✓ Activo</span>
+                </a>
+                <a href="kds.html" class="w-full bg-slate-900 hover:bg-slate-800 border border-slate-800 text-white font-extrabold py-3 px-3.5 rounded-2xl text-xs flex items-center justify-between no-underline">
+                    <span class="flex items-center gap-2">👨‍🍳 Pantalla de Cocina (KDS)</span>
+                    <span class="text-slate-400">➔</span>
+                </a>
+            </div>
+
+            <button onclick="cerrarStaffMenu()" class="w-full bg-slate-900 hover:bg-slate-800 text-slate-400 font-bold py-2.5 rounded-xl text-xs border border-slate-800" style="width: 100%;">
+                Cerrar
+            </button>
+        </div>
+    </div>
+
+    <main class="main-container">
+        <!-- SEGMENTED CONTROL TABS PAR CELULARES -->
+        <div class="segmented-control">
+            <button onclick="switchTabCajero('caja')" id="tab-btn-caja" class="segmented-btn active">
+                💰 Cobros <span id="badge-pendientes-count" class="badge badge-warning" style="margin-left: 4px; padding: 2px 6px;">0</span>
+            </button>
+            <button onclick="switchTabCajero('inventario')" id="tab-btn-inventario" class="segmented-btn">
+                🎛️ Stock Insumos
+            </button>
+        </div>
+
+        <!-- SECCIÓN 1: COBROS Y CAJA -->
+        <div id="section-caja">
+            <!-- RESUMEN KPI EN 3 MINI CARDS -->
+            <div class="kpi-grid">
+                <div class="kpi-card" style="border-left: 3px solid var(--primary);">
+                    <div class="kpi-label">Saldo Caja</div>
+                    <div id="caja-saldo-actual" class="kpi-value" style="color: var(--primary);">S/ 0.00</div>
+                </div>
+                <div class="kpi-card" style="border-left: 3px solid var(--info);">
+                    <div class="kpi-label">Ingresos</div>
+                    <div id="caja-total-ingresos" class="kpi-value" style="color: var(--info);">S/ 0.00</div>
+                </div>
+                <div class="kpi-card" style="border-left: 3px solid var(--danger);">
+                    <div class="kpi-label">Egresos</div>
+                    <div id="caja-total-egresos" class="kpi-value" style="color: var(--danger);">S/ 0.00</div>
+                </div>
+            </div>
+
+            <!-- LISTA DE PEDIDOS PENDIENTES DE COBRO -->
+            <section style="margin-bottom: 2rem;">
+                <h2 style="font-size: 1.1rem; font-weight: 800; margin-bottom: 0.8rem; color: #fff;">
+                    📋 Pedidos Pendientes de Cobro
+                </h2>
+
+                <div id="pedidos-pendientes-list" style="display: flex; flex-direction: column; gap: 0.85rem;">
+                    <p style="color: var(--text-muted); font-size: 0.85rem;">Cargando pedidos pendientes...</p>
+                </div>
+            </section>
+
+            <!-- HISTORIAL RECIENTE DE CAJA -->
+            <section>
+                <h2 style="font-size: 1.1rem; font-weight: 800; margin-bottom: 0.8rem; color: var(--text-muted);">
+                    📜 Movimientos de Caja
+                </h2>
+
+                <div class="card-mobile" style="padding: 1rem;">
+                    <div id="caja-movimientos-list" style="display: flex; flex-direction: column; gap: 8px; max-height: 360px; overflow-y: auto;">
+                        <p style="color: var(--text-muted); font-size: 0.85rem;">Cargando historial...</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- SECCIÓN 2: CONTROL DE INVENTARIO Y STOCK -->
+        <div id="section-inventario" style="display: none;">
+            <div style="background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.25); padding: 1rem; border-radius: 16px; margin-bottom: 1.25rem;">
+                <h3 style="color: var(--primary); font-size: 1rem; font-weight: 800;">⚡ Control de Disponibilidad</h3>
+                <p style="color: var(--text-muted); font-size: 0.8rem; margin-top: 2px; margin-bottom: 10px;">
+                    Desactiva insumos agotados. Los jugos que los utilicen se marcarán automáticamente como no disponibles.
+                </p>
+                <button onclick="guardarCambiosStockManual()" class="btn" style="padding: 10px; font-size: 0.85rem;">
+                    💾 Guardar Disponibilidad
+                </button>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 1.25rem;">
+                <!-- INSUMOS -->
+                <section class="card-mobile" style="padding: 1rem;">
+                    <h3 style="font-size: 1.05rem; font-weight: 800; margin-bottom: 0.6rem; color: var(--primary);">
+                        🍓 Insumos y Frutas
+                    </h3>
+                    
+                    <select id="filter-insumos-select" onchange="filtrarSeleccionInsumos()" class="select-filter-custom">
+                        <option value="Todos">✨ Todos los Insumos</option>
+                        <option value="Fruta">🍎 Frutas Frescas</option>
+                        <option value="Endulzante">🍯 Endulzantes</option>
+                        <option value="Topping">🌰 Toppings</option>
+                    </select>
+
+                    <div id="inventory-insumos-list" style="display: flex; flex-direction: column; gap: 8px; max-height: 380px; overflow-y: auto;">
+                        <p style="color: var(--text-muted); font-size: 0.85rem;">Cargando insumos...</p>
+                    </div>
+                </section>
+
+                <!-- PRODUCTOS BASE -->
+                <section class="card-mobile" style="padding: 1rem;">
+                    <h3 style="font-size: 1.05rem; font-weight: 800; margin-bottom: 0.6rem; color: var(--info);">
+                        🥤 Carta de Productos
+                    </h3>
+                    
+                    <select id="filter-productos-select" onchange="filtrarSeleccionProductos()" class="select-filter-custom">
+                        <option value="Todos">✨ Todos los Productos</option>
+                        <option value="Elixir Funcional">🍹 Elixires Funcionales</option>
+                        <option value="Smoothie">🥤 Smoothies</option>
+                        <option value="Bowl">🥣 Bowls</option>
+                        <option value="Postre Fit">🥞 Panqueques</option>
+                    </select>
+
+                    <div id="inventory-productos-list" style="display: flex; flex-direction: column; gap: 8px; max-height: 380px; overflow-y: auto;">
+                        <p style="color: var(--text-muted); font-size: 0.85rem;">Cargando productos...</p>
+                    </div>
+                </section>
+
+                <!-- REGLAS DE RECETAS -->
+                <section class="card-mobile" style="padding: 1rem;">
+                    <h3 style="font-size: 1rem; font-weight: 800; margin-bottom: 0.6rem; color: var(--accent);">
+                        📖 Reglas de Receta
+                    </h3>
+                    <div id="inventory-recetas-list" style="display: flex; flex-direction: column; gap: 6px;">
+                        <p style="color: var(--text-muted); font-size: 0.85rem;">Cargando reglas...</p>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </main>
+
+    <!-- TOAST -->
+    <div id="toast-notification" class="toast-banner">
+        <span>✅ ¡Cambios guardados correctamente!</span>
+    </div>
+
+    <script src="app.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            cargarDatosCajero();
+            cargarControlInventario();
+            setInterval(cargarDatosCajero, 5000);
+        });
+    </script>
+</body>
+</html>
