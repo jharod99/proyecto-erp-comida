@@ -4,44 +4,58 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Proyecto Coconut - Panel de Caja & Stock</title>
+    <!-- TAILWINDCSS VIA CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        emerald: { 400: '#34d399', 500: '#10b981', 600: '#059669', 900: '#064e3b' },
+                        amber: { 500: '#f59e0b' }
+                    }
+                }
+            }
+        }
+    </script>
     <link rel="stylesheet" href="styles.css">
 </head>
-<body>
+<body class="bg-[#060d19] text-slate-100 min-h-screen flex flex-col font-sans antialiased">
     <!-- HEADER LIMPIO ADMIN Y CAJA -->
     <header class="navbar-clean">
         <div class="brand-clean">
             🥥 Juguería <span>Coconut</span>
         </div>
-        <div style="display: flex; gap: 6px;">
+        <div class="flex items-center gap-2">
             <button onclick="toggleStaffMenu()" class="btn-paneles-header">
                 <span>⚙️</span> <span>Paneles</span>
             </button>
         </div>
     </header>
 
-    <!-- MODAL NAVEGACIÓN -->
+    <!-- MODAL NAVEGACIÓN ESTANDARIZADO -->
     <div id="staff-access-modal" class="modal-overlay">
         <div class="modal rounded-3xl bg-[#0d1527] border border-slate-800 p-5 text-center shadow-2xl">
             <div class="text-3xl mb-1">⚙️</div>
             <h3 class="text-base font-black text-white mb-1">Navegación del Sistema</h3>
             <p class="text-slate-400 text-xs mb-3">Selecciona el módulo al que deseas ingresar:</p>
             
-            <div class="space-y-2 mb-4 text-left" style="display: flex; flex-direction: column; gap: 8px;">
-                <a href="index.html" class="w-full bg-slate-900 hover:bg-slate-800 border border-slate-800 text-white font-extrabold py-3 px-3.5 rounded-2xl text-xs flex items-center justify-between no-underline">
+            <div class="space-y-2 mb-4 text-left flex flex-col gap-2">
+                <a href="index.html" class="modal-nav-btn">
                     <span class="flex items-center gap-2">🍹 Menú de Jugos (Cliente)</span>
                     <span class="text-slate-400">➔</span>
                 </a>
-                <a href="cajero.html" class="w-full bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 font-extrabold py-3 px-3.5 rounded-2xl text-xs flex items-center justify-between no-underline">
+                <a href="cajero.html" class="modal-nav-btn active-page">
                     <span class="flex items-center gap-2">💳 Administración & Caja</span>
                     <span>✓ Activo</span>
                 </a>
-                <a href="kds.html" class="w-full bg-slate-900 hover:bg-slate-800 border border-slate-800 text-white font-extrabold py-3 px-3.5 rounded-2xl text-xs flex items-center justify-between no-underline">
+                <a href="kds.html" class="modal-nav-btn">
                     <span class="flex items-center gap-2">👨‍🍳 Pantalla de Cocina (KDS)</span>
                     <span class="text-slate-400">➔</span>
                 </a>
             </div>
 
-            <button onclick="cerrarStaffMenu()" class="w-full bg-slate-900 hover:bg-slate-800 text-slate-400 font-bold py-2.5 rounded-xl text-xs border border-slate-800" style="width: 100%;">
+            <button onclick="cerrarStaffMenu()" class="btn-close-modal">
                 Cerrar
             </button>
         </div>
