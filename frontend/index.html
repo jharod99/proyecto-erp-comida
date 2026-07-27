@@ -56,22 +56,22 @@
             <h3 class="text-base font-black text-white mb-1">Navegación del Sistema</h3>
             <p class="text-slate-400 text-xs mb-3">Selecciona el módulo al que deseas ingresar:</p>
             
-            <div class="space-y-2 mb-4 text-left" style="display: flex; flex-direction: column; gap: 8px;">
-                <a href="index.html" class="w-full bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 font-extrabold py-3 px-3.5 rounded-2xl text-xs flex items-center justify-between no-underline">
+            <div class="space-y-2 mb-4 text-left flex flex-col gap-2">
+                <a href="index.html" class="modal-nav-btn active-page">
                     <span class="flex items-center gap-2">🍹 Menú de Jugos (Cliente)</span>
                     <span>✓ Activo</span>
                 </a>
-                <a href="cajero.html" class="w-full bg-slate-900 hover:bg-slate-800 border border-slate-800 text-white font-extrabold py-3 px-3.5 rounded-2xl text-xs flex items-center justify-between no-underline transition">
+                <a href="cajero.html" class="modal-nav-btn">
                     <span class="flex items-center gap-2">💳 Administración & Caja</span>
                     <span class="text-slate-400">➔</span>
                 </a>
-                <a href="kds.html" class="w-full bg-slate-900 hover:bg-slate-800 border border-slate-800 text-white font-extrabold py-3 px-3.5 rounded-2xl text-xs flex items-center justify-between no-underline transition">
+                <a href="kds.html" class="modal-nav-btn">
                     <span class="flex items-center gap-2">👨‍🍳 Pantalla de Cocina (KDS)</span>
                     <span class="text-slate-400">➔</span>
                 </a>
             </div>
 
-            <button onclick="cerrarStaffMenu()" class="w-full bg-slate-900 hover:bg-slate-800 text-slate-400 font-bold py-2.5 rounded-xl text-xs border border-slate-800" style="width: 100%;">
+            <button onclick="cerrarStaffMenu()" class="btn-close-modal">
                 Cerrar
             </button>
         </div>
