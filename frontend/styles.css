@@ -72,6 +72,31 @@ body {
     -webkit-text-fill-color: transparent;
 }
 
+/* BOTÓN ESTANDARIZADO DE PANELES EN ENCABEZADO */
+.btn-paneles-header {
+    background: rgba(15, 23, 42, 0.9);
+    border: 1px solid var(--border-color);
+    color: var(--text-light);
+    padding: 7px 16px;
+    border-radius: 20px;
+    font-size: 0.82rem;
+    font-weight: 800;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.btn-paneles-header:hover, .btn-paneles-header:active {
+    background: rgba(30, 41, 59, 0.95);
+    border-color: var(--primary);
+    color: #fff;
+    transform: translateY(-1px);
+}
+
 .nav-pill-btn {
     background: rgba(255, 255, 255, 0.06);
     border: 1px solid var(--border-color);
