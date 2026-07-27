@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Juguería Coconut - Carta Saludable</title>
+    <!-- TAILWINDCSS VIA CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        emerald: {
+                            400: '#34d399',
+                            500: '#10b981',
+                            600: '#059669',
+                            900: '#064e3b',
+                        },
+                        amber: {
+                            500: '#f59e0b',
+                        },
+                        dark: {
+                            800: '#0f172a',
+                            900: '#060d19',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+<body class="bg-[#060d19] text-slate-100 min-h-screen flex flex-col pb-24 font-sans antialiased selection:bg-emerald-500 selection:text-white">
+
+    <!-- HEADER LIMPIO MÓVIL CLIENTE CON ACCESO STAFF -->
+    <header class="navbar-clean">
+        <div class="brand-clean">
+            🥥 Juguería <span>Coconut</span>
+        </div>
+        <div class="flex items-center gap-2">
+            <button onclick="toggleStaffMenu()" class="text-xs px-3 py-1.5 rounded-full bg-slate-800/90 border border-slate-700 text-slate-200 font-extrabold flex items-center gap-1.5 hover:bg-slate-700 active:scale-95 transition">
+                <span>⚙️ Staff / Paneles</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- MODAL / DRAWER ACCESO NAVEGACIÓN PANÉLES -->
+    <div id="staff-access-modal" class="modal-overlay">
+        <div class="modal rounded-3xl bg-[#0d1527] border border-slate-800 p-5 text-center shadow-2xl">
+            <div class="text-3xl mb-1">⚙️</div>
+            <h3 class="text-base font-black text-white mb-1">Navegación del Sistema</h3>
+            <p class="text-slate-400 text-xs mb-3">Selecciona el módulo al que deseas ingresar:</p>
+            
+            <div class="space-y-2 mb-4 text-left">
+                <a href="index.html" class="w-full bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 font-extrabold py-3 px-3.5 rounded-2xl text-xs flex items-center justify-between no-underline">
+                    <span class="flex items-center gap-2">🍹 Menú de Jugos (Cliente)</span>
+                    <span>✓ Activo</span>
+                </a>
+                <a href="cajero.html" class="w-full bg-slate-900 hover:bg-slate-800 border border-slate-800 text-white font-extrabold py-3 px-3.5 rounded-2xl text-xs flex items-center justify-between no-underline transition">
+                    <span class="flex items-center gap-2">💳 Administración & Caja</span>
+                    <span class="text-slate-400">➔</span>
+                </a>
+                <a href="kds.html" class="w-full bg-slate-900 hover:bg-slate-800 border border-slate-800 text-white font-extrabold py-3 px-3.5 rounded-2xl text-xs flex items-center justify-between no-underline transition">
+                    <span class="flex items-center gap-2">👨‍🍳 Pantalla de Cocina (KDS)</span>
+                    <span class="text-slate-400">➔</span>
+                </a>
+            </div>
+
+            <button onclick="cerrarStaffMenu()" class="w-full bg-slate-900 hover:bg-slate-800 text-slate-400 font-bold py-2.5 rounded-xl text-xs border border-slate-800">
+                Cerrar
+            </button>
+        </div>
+    </div>
+
+    <!-- BANNER SALUDABLE COMPACTO MÓVIL -->
+    <section class="px-3 pt-3 pb-1">
+        <div class="bg-gradient-to-r from-emerald-950/60 to-slate-900 border border-emerald-500/30 rounded-2xl p-3.5 shadow-xl">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h1 class="text-lg font-black text-white leading-tight">Jugos & Smoothies Naturales 🍹</h1>
+                    <p class="text-[11px] text-slate-300 mt-0.5">Elige tu combinación perfecta y pide directo por WhatsApp</p>
+                </div>
+                <span class="text-3xl">🍊</span>
+            </div>
+            <div class="flex gap-2 mt-2.5 overflow-x-auto no-scrollbar">
+                <span class="text-[10px] font-bold bg-emerald-500/20 text-emerald-300 px-2.5 py-0.5 rounded-full border border-emerald-500/30 whitespace-nowrap">✨ 100% Fruta Natural</span>
+                <span class="text-[10px] font-bold bg-amber-500/20 text-amber-300 px-2.5 py-0.5 rounded-full border border-amber-500/30 whitespace-nowrap">🍯 Sin Azúcar Añadida</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- SLIDER HORIZONTAL CATEGORÍAS (STICKY TOP) -->
+    <section class="px-3 py-2 sticky top-[52px] z-30 bg-[#060d19]/95 backdrop-blur-md">
+        <div id="category-filters" class="flex gap-2 overflow-x-auto no-scrollbar py-0.5">
+            <button onclick="filtrarCategoria('Todos')" class="nav-pill-btn active filter-btn text-xs px-3.5 py-1.5 rounded-xl font-extrabold whitespace-nowrap">✨ Todos</button>
+            <button onclick="filtrarCategoria('Elixir Funcional')" class="nav-pill-btn filter-btn text-xs px-3.5 py-1.5 rounded-xl font-extrabold whitespace-nowrap">🍹 Elixires</button>
+            <button onclick="filtrarCategoria('Smoothie')" class="nav-pill-btn filter-btn text-xs px-3.5 py-1.5 rounded-xl font-extrabold whitespace-nowrap">🥤 Smoothies</button>
+            <button onclick="filtrarCategoria('Bowl')" class="nav-pill-btn filter-btn text-xs px-3.5 py-1.5 rounded-xl font-extrabold whitespace-nowrap">🥣 Bowls</button>
+            <button onclick="filtrarCategoria('Postre Fit')" class="nav-pill-btn filter-btn text-xs px-3.5 py-1.5 rounded-xl font-extrabold whitespace-nowrap">🥞 Panqueques</button>
+        </div>
+    </section>
+
+    <!-- CATÁLOGO DE PRODUCTOS RESPONSIVO -->
+    <main class="px-3 py-1 max-w-4xl mx-auto w-full">
+        <div id="catalog-container" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+            <p class="text-slate-400 text-xs col-span-full text-center py-8">Cargando nuestra carta de jugos frescos...</p>
+        </div>
+    </main>
+
+    <!-- STICKY ACTION BAR EN ZONA DEL PULGAR (BOTTOM THUMB-ZONE) -->
+    <div class="fixed inset-x-0 bottom-0 z-40 bg-[#0c1424]/95 backdrop-blur-lg border-t border-slate-800 p-3 shadow-2xl">
+        <div class="max-w-md mx-auto flex items-center justify-between gap-3">
+            <div>
+                <span class="text-[10px] text-slate-400 block font-bold uppercase tracking-wider">Monto Total</span>
+                <span id="sticky-cart-total" class="text-lg font-black text-emerald-400">S/ 0.00</span>
+            </div>
+            <button onclick="abrirBottomSheetCarrito()" class="flex-1 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-400 hover:to-emerald-500 text-white font-extrabold py-3.5 px-4 rounded-2xl shadow-lg shadow-emerald-500/25 flex items-center justify-center gap-2 active:scale-95 transition">
+                <span>🛒 Mi Pedido</span>
+                <span id="sticky-cart-count" class="bg-emerald-900/60 text-emerald-200 text-xs px-2 py-0.5 rounded-full font-bold">0</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- MODAL CUSTOMIZAR -->
+    <div id="custom-modal" class="modal-overlay">
+        <div class="modal rounded-3xl bg-[#0d1527] border border-slate-800 p-5 shadow-2xl">
+            <div class="flex justify-between items-center pb-3 border-b border-slate-800">
+                <h3 id="modal-product-title" class="text-base font-black text-white">Personaliza tu Elección</h3>
+                <button onclick="cerrarModal()" class="text-slate-400 hover:text-white text-2xl font-bold">&times;</button>
+            </div>
+            
+            <p id="modal-product-desc" class="text-emerald-400 text-xs font-bold my-2"></p>
+
+            <div id="insumos-container" class="max-h-60 overflow-y-auto pr-1 my-2">
+                <!-- Insumos cargados dinámicamente -->
+            </div>
+
+            <div class="mt-4 flex gap-2">
+                <button onclick="agregarAlCarritoDesdeModal()" class="flex-1 bg-emerald-500 hover:bg-emerald-400 text-white font-bold py-3 rounded-xl text-xs shadow-lg transition">
+                    Agregar a mi Pedido
+                </button>
+                <button onclick="cerrarModal()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold px-3 py-3 rounded-xl text-xs transition">
+                    Volver
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- BOTTOM SHEET CHECKOUT -->
+    <div id="cart-bottom-sheet" class="modal-overlay">
+        <div class="fixed inset-x-0 bottom-0 z-50 bg-[#0d1527] border-t border-slate-800 rounded-t-3xl p-5 shadow-2xl max-w-lg mx-auto max-h-[92vh] overflow-y-auto transform transition-transform duration-300 translate-y-0">
+            
+            <!-- TIRADOR VISUAL -->
+            <div class="w-12 h-1 bg-slate-700 rounded-full mx-auto mb-3 cursor-pointer" onclick="cerrarBottomSheetCarrito()"></div>
+
+            <div class="flex justify-between items-center pb-2.5 border-b border-slate-800 mb-3">
+                <h3 class="text-base font-black text-white flex items-center gap-2">
+                    <span>🛒 Resumen de tu Pedido</span>
+                </h3>
+                <button onclick="cerrarBottomSheetCarrito()" class="text-slate-400 hover:text-white text-2xl font-bold">&times;</button>
+            </div>
+
+            <div id="cart-items-container" class="space-y-2 max-h-36 overflow-y-auto mb-3">
+                <p class="text-slate-400 text-xs text-center py-4">Tu carrito está vacío.</p>
+            </div>
+
+            <div class="border-t border-slate-800 pt-3 space-y-3">
+                <div class="flex justify-between items-center font-black text-white">
+                    <span class="text-sm">Monto Total:</span>
+                    <span id="cart-total" class="text-emerald-400 text-lg">S/ 0.00</span>
+                </div>
+
+                <div class="grid grid-cols-2 gap-2">
+                    <div>
+                        <label class="text-[10px] font-bold text-slate-400 block mb-1">Tu Celular:</label>
+                        <input type="text" id="cliente-telefono" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2.5 text-white text-xs focus:border-emerald-500 focus:outline-none" placeholder="Ej: 987654321">
+                    </div>
+                    <div>
+                        <label class="text-[10px] font-bold text-slate-400 block mb-1">Tu Nombre:</label>
+                        <input type="text" id="cliente-nombre" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2.5 text-white text-xs focus:border-emerald-500 focus:outline-none" placeholder="Ej: María">
+                    </div>
+                </div>
+
+                <!-- SELECTOR MÉTODO DE PAGO -->
+                <div>
+                    <label class="text-[10px] font-bold text-slate-400 block mb-1 uppercase tracking-wider">Método de Pago:</label>
+                    <div class="grid grid-cols-2 gap-2">
+                        <label class="cursor-pointer">
+                            <input type="radio" name="radio-metodo-pago" value="yape" checked onchange="actualizarInfoPagoUI()" class="hidden peer">
+                            <div class="bg-slate-900 border border-slate-800 peer-checked:border-emerald-500 peer-checked:bg-emerald-500/10 p-2 rounded-xl text-center text-xs font-extrabold text-slate-300 peer-checked:text-emerald-400 transition">
+                                📱 Yape / Plin
+                            </div>
+                        </label>
+                        <label class="cursor-pointer">
+                            <input type="radio" name="radio-metodo-pago" value="efectivo" onchange="actualizarInfoPagoUI()" class="hidden peer">
+                            <div class="bg-slate-900 border border-slate-800 peer-checked:border-emerald-500 peer-checked:bg-emerald-500/10 p-2 rounded-xl text-center text-xs font-extrabold text-slate-300 peer-checked:text-emerald-400 transition">
+                                💵 Efectivo
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- SELECTOR MOMENTO DE PAGO -->
+                <div>
+                    <label class="text-[10px] font-bold text-slate-400 block mb-1 uppercase tracking-wider">¿Cuándo realizarás el pago?:</label>
+                    <div class="grid grid-cols-2 gap-2">
+                        <label class="cursor-pointer">
+                            <input type="radio" name="radio-momento-pago" value="inmediato" checked onchange="actualizarInfoPagoUI()" class="hidden peer">
+                            <div class="bg-slate-900 border border-slate-800 peer-checked:border-emerald-500 peer-checked:bg-emerald-500/10 p-2 rounded-xl text-center text-xs font-extrabold text-slate-300 peer-checked:text-emerald-400 transition">
+                                ⚡ Pagar Ahora
+                            </div>
+                        </label>
+                        <label class="cursor-pointer">
+                            <input type="radio" name="radio-momento-pago" value="despues_consumo" onchange="actualizarInfoPagoUI()" class="hidden peer">
+                            <div class="bg-slate-900 border border-slate-800 peer-checked:border-emerald-500 peer-checked:bg-emerald-500/10 p-2 rounded-xl text-center text-xs font-extrabold text-slate-300 peer-checked:text-emerald-400 transition">
+                                🍽️ Pagar al Consumir
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- INFORMACIÓN PAGO -->
+                <div id="info-pago-box" class="bg-slate-900/90 border border-slate-800 rounded-2xl p-3 text-center shadow-lg">
+                </div>
+
+                <button id="btn-crear-pedido" class="w-full mt-2 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white font-black py-3.5 rounded-xl shadow-lg shadow-emerald-500/25 text-xs flex items-center justify-center gap-2 active:scale-95 transition">
+                    🍹 Confirmar y Enviar Pedido
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL FINALIZACIÓN -->
+    <div id="payment-modal" class="modal-overlay">
+        <div class="modal rounded-3xl bg-[#0d1527] border border-slate-800 p-5 text-center shadow-2xl">
+            <div class="text-3xl mb-1">🍹</div>
+            <h3 class="text-lg font-black text-white mb-1">¡Pedido Registrado!</h3>
+            <p id="modal-pago-instruccion-texto" class="text-slate-300 text-xs mb-3">
+                Tu pedido ha sido enviado a la cocina. Haz clic abajo para abrir WhatsApp:
+            </p>
+
+            <div class="bg-slate-900 border border-slate-800 p-3 rounded-xl mb-3 text-left text-xs space-y-1">
+                <p><strong>N° de Pedido:</strong> #<span id="created-order-id"></span></p>
+                <p><strong>Monto Total:</strong> <span id="created-order-total" class="text-emerald-400 font-black"></span></p>
+                <p><strong>Forma de Pago:</strong> <span id="created-order-metodo" class="text-amber-400 font-bold"></span></p>
+            </div>
+
+            <a id="whatsapp-order-btn" href="#" target="_blank" class="w-full bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-black py-3 rounded-xl shadow-lg text-xs mb-2 flex items-center justify-center gap-2 text-decoration-none">
+                💬 Abrir Pedido en WhatsApp
+            </a>
+
+            <button onclick="finalizarModalPago()" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold py-2 rounded-xl text-xs">
+                Listo
+            </button>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
