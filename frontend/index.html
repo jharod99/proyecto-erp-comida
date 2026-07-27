@@ -37,14 +37,14 @@
 </head>
 <body class="bg-[#060d19] text-slate-100 min-h-screen flex flex-col pb-24 font-sans antialiased selection:bg-emerald-500 selection:text-white">
 
-    <!-- HEADER LIMPIO MÓVIL CLIENTE CON ACCESO STAFF -->
+    <!-- HEADER LIMPIO MÓVIL CLIENTE CON BOTÓN PANELES ESTANDARIZADO -->
     <header class="navbar-clean">
         <div class="brand-clean">
             🥥 Juguería <span>Coconut</span>
         </div>
         <div class="flex items-center gap-2">
-            <button onclick="toggleStaffMenu()" class="text-xs px-3 py-1.5 rounded-full bg-slate-800/90 border border-slate-700 text-slate-200 font-extrabold flex items-center gap-1.5 hover:bg-slate-700 active:scale-95 transition">
-                <span>⚙️ Staff / Paneles</span>
+            <button onclick="toggleStaffMenu()" class="btn-paneles-header">
+                <span>⚙️</span> <span>Paneles</span>
             </button>
         </div>
     </header>
@@ -56,7 +56,7 @@
             <h3 class="text-base font-black text-white mb-1">Navegación del Sistema</h3>
             <p class="text-slate-400 text-xs mb-3">Selecciona el módulo al que deseas ingresar:</p>
             
-            <div class="space-y-2 mb-4 text-left">
+            <div class="space-y-2 mb-4 text-left" style="display: flex; flex-direction: column; gap: 8px;">
                 <a href="index.html" class="w-full bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 font-extrabold py-3 px-3.5 rounded-2xl text-xs flex items-center justify-between no-underline">
                     <span class="flex items-center gap-2">🍹 Menú de Jugos (Cliente)</span>
                     <span>✓ Activo</span>
@@ -71,7 +71,7 @@
                 </a>
             </div>
 
-            <button onclick="cerrarStaffMenu()" class="w-full bg-slate-900 hover:bg-slate-800 text-slate-400 font-bold py-2.5 rounded-xl text-xs border border-slate-800">
+            <button onclick="cerrarStaffMenu()" class="w-full bg-slate-900 hover:bg-slate-800 text-slate-400 font-bold py-2.5 rounded-xl text-xs border border-slate-800" style="width: 100%;">
                 Cerrar
             </button>
         </div>
@@ -94,14 +94,14 @@
         </div>
     </section>
 
-    <!-- SLIDER HORIZONTAL CATEGORÍAS (STICKY TOP) -->
+    <!-- SLIDER HORIZONTAL CATEGORÍAS (STICKY TOP) CON DATA-CATEGORY -->
     <section class="px-3 py-2 sticky top-[52px] z-30 bg-[#060d19]/95 backdrop-blur-md">
         <div id="category-filters" class="flex gap-2 overflow-x-auto no-scrollbar py-0.5">
-            <button onclick="filtrarCategoria('Todos')" class="nav-pill-btn active filter-btn text-xs px-3.5 py-1.5 rounded-xl font-extrabold whitespace-nowrap">✨ Todos</button>
-            <button onclick="filtrarCategoria('Elixir Funcional')" class="nav-pill-btn filter-btn text-xs px-3.5 py-1.5 rounded-xl font-extrabold whitespace-nowrap">🍹 Elixires</button>
-            <button onclick="filtrarCategoria('Smoothie')" class="nav-pill-btn filter-btn text-xs px-3.5 py-1.5 rounded-xl font-extrabold whitespace-nowrap">🥤 Smoothies</button>
-            <button onclick="filtrarCategoria('Bowl')" class="nav-pill-btn filter-btn text-xs px-3.5 py-1.5 rounded-xl font-extrabold whitespace-nowrap">🥣 Bowls</button>
-            <button onclick="filtrarCategoria('Postre Fit')" class="nav-pill-btn filter-btn text-xs px-3.5 py-1.5 rounded-xl font-extrabold whitespace-nowrap">🥞 Panqueques</button>
+            <button data-category="Todos" onclick="filtrarCategoria('Todos')" class="nav-pill-btn active filter-btn text-xs px-3.5 py-1.5 rounded-xl font-extrabold whitespace-nowrap">✨ Todos</button>
+            <button data-category="Elixir Funcional" onclick="filtrarCategoria('Elixir Funcional')" class="nav-pill-btn filter-btn text-xs px-3.5 py-1.5 rounded-xl font-extrabold whitespace-nowrap">🍹 Elixires</button>
+            <button data-category="Smoothie" onclick="filtrarCategoria('Smoothie')" class="nav-pill-btn filter-btn text-xs px-3.5 py-1.5 rounded-xl font-extrabold whitespace-nowrap">🥤 Smoothies</button>
+            <button data-category="Bowl" onclick="filtrarCategoria('Bowl')" class="nav-pill-btn filter-btn text-xs px-3.5 py-1.5 rounded-xl font-extrabold whitespace-nowrap">🥣 Bowls</button>
+            <button data-category="Postre Fit" onclick="filtrarCategoria('Postre Fit')" class="nav-pill-btn filter-btn text-xs px-3.5 py-1.5 rounded-xl font-extrabold whitespace-nowrap">🥞 Panqueques</button>
         </div>
     </section>
 
