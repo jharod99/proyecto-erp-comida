@@ -5,8 +5,38 @@
 const API_BASE = '/api';
 const WHATSAPP_NUMERO = '51987654321'; // Número de WhatsApp de la Juguería
 
+// PRODUCTOS E INSUMOS FALLBACK (Garantiza que el catálogo NUNCA aparezca vacío)
+const PRODUCTOS_FALLBACK = [
+    { id: 1, nombre: "Jugo Inmunidad", categoria: "Elixir Funcional", precio: "12.00", disponible: true, imagen_url: "https://images.unsplash.com/photo-1613478223719-2ab802602423?auto=format&fit=crop&w=600&q=80" },
+    { id: 2, nombre: "Jugo Detox Profundo", categoria: "Elixir Funcional", precio: "14.00", disponible: true, imagen_url: "https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=600&q=80" },
+    { id: 3, nombre: "Jugo Energía Pura", categoria: "Elixir Funcional", precio: "13.00", disponible: true, imagen_url: "https://images.unsplash.com/photo-1534353473418-4cfa6c56fd38?auto=format&fit=crop&w=600&q=80" },
+    { id: 4, nombre: "Smoothie Proteico", categoria: "Smoothie", precio: "16.00", disponible: true, imagen_url: "https://images.unsplash.com/photo-1553530666-ba11a7da3888?auto=format&fit=crop&w=600&q=80" },
+    { id: 5, nombre: "Smoothie Vitalidad", categoria: "Smoothie", precio: "15.00", disponible: true, imagen_url: "https://images.unsplash.com/photo-1502741224143-90386d7f8c82?auto=format&fit=crop&w=600&q=80" },
+    { id: 6, nombre: "Bowl Açaí Tropical", categoria: "Bowl", precio: "20.00", disponible: true, imagen_url: "https://images.unsplash.com/photo-1590301157890-4810ed352733?auto=format&fit=crop&w=600&q=80" },
+    { id: 7, nombre: "Bowl Mango Sunset", categoria: "Bowl", precio: "18.00", disponible: true, imagen_url: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=600&q=80" },
+    { id: 8, nombre: "Base de Panqueque Fit", categoria: "Postre Fit", precio: "18.00", disponible: true, imagen_url: "https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?auto=format&fit=crop&w=600&q=80" }
+];
+
+const INSUMOS_FALLBACK = [
+    { id: 1, nombre: "Fresas", tipo: "Fruta", disponible: true },
+    { id: 2, nombre: "Arándanos", tipo: "Fruta", disponible: true },
+    { id: 3, nombre: "Mango", tipo: "Fruta", disponible: true },
+    { id: 4, nombre: "Plátano", tipo: "Fruta", disponible: true },
+    { id: 5, nombre: "Frambuesas", tipo: "Fruta", disponible: true },
+    { id: 6, nombre: "Pitahaya", tipo: "Fruta", disponible: true },
+    { id: 7, nombre: "Pulpa de Açaí", tipo: "Fruta", disponible: true },
+    { id: 8, nombre: "Fruto del Monje", tipo: "Endulzante", disponible: true },
+    { id: 9, nombre: "Stevia", tipo: "Endulzante", disponible: true },
+    { id: 10, nombre: "Panela Orgánica", tipo: "Endulzante", disponible: true },
+    { id: 11, nombre: "Miel de Agave", tipo: "Endulzante", disponible: true },
+    { id: 12, nombre: "Nibs de Cacao", tipo: "Topping", disponible: true },
+    { id: 13, nombre: "Semillas de Chía", tipo: "Topping", disponible: true },
+    { id: 14, nombre: "Almendras Laminadas", tipo: "Topping", disponible: true },
+    { id: 15, nombre: "Coco Tostado", tipo: "Topping", disponible: true }
+];
+
 // ESTADO GLOBAL
-let menuData = { productos_base: [], insumos: [] };
+let menuData = { productos_base: PRODUCTOS_FALLBACK, insumos: INSUMOS_FALLBACK };
 let inventarioDataAdmin = { productos_base: [], insumos: [], recetas_dependencias: [] };
 let categoriaSeleccionada = 'Todos';
 let carrito = [];
@@ -38,17 +68,22 @@ function toggleMenuMobile() {
 async function cargarMenu() {
     try {
         const response = await fetch(`${API_BASE}/menu`);
-        if (!response.ok) throw new Error("Error cargando el menú");
-        
-        menuData = await response.json();
-        renderizarCatalogo(filtrarProductosPorCategoria(menuData.productos_base));
-    } catch (error) {
-        console.error("Error al obtener menú:", error);
-        const container = document.getElementById('catalog-container');
-        if (container) {
-            container.innerHTML = `<p class="text-rose-400 text-xs col-span-full text-center py-6">Error al conectar con la carta de jugos.</p>`;
+        if (response.ok) {
+            const data = await response.json();
+            if (data && data.productos_base && data.productos_base.length > 0) {
+                menuData = data;
+            } else {
+                menuData = { productos_base: PRODUCTOS_FALLBACK, insumos: INSUMOS_FALLBACK };
+            }
+        } else {
+            menuData = { productos_base: PRODUCTOS_FALLBACK, insumos: INSUMOS_FALLBACK };
         }
+    } catch (error) {
+        console.warn("API de menú no alcanzable, utilizando datos de respaldo:", error);
+        menuData = { productos_base: PRODUCTOS_FALLBACK, insumos: INSUMOS_FALLBACK };
     }
+
+    renderizarCatalogo(filtrarProductosPorCategoria(menuData.productos_base));
 }
 
 function filtrarCategoria(cat) {
@@ -88,7 +123,7 @@ function renderizarCatalogo(productos) {
     }
 
     container.innerHTML = productos.map(prod => {
-        const estaDisponible = prod.disponible;
+        const estaDisponible = prod.disponible !== false;
         const opacityClass = estaDisponible ? '' : 'opacity-40 grayscale pointer-events-none relative';
 
         return `
