@@ -36,10 +36,9 @@ const INSUMOS_FALLBACK = [
 ];
 
 const RECETAS_FALLBACK = [
-    { id: 1, producto_id: 1, nombre_producto: "Jugo Inmunidad", insumo_id: 1, nombre_insumo: "Fresas", es_obligatorio: true },
-    { id: 2, producto_id: 2, nombre_producto: "Jugo Detox Profundo", insumo_id: 2, nombre_insumo: "Arándanos", es_obligatorio: true },
-    { id: 3, producto_id: 4, nombre_producto: "Smoothie Proteico", insumo_id: 4, nombre_insumo: "Plátano", es_obligatorio: true },
-    { id: 4, producto_id: 6, nombre_producto: "Bowl Açaí Tropical", insumo_id: 7, nombre_insumo: "Pulpa de Açaí", es_obligatorio: true }
+    { id: 1, producto_id: 6, nombre_producto: "Bowl Açaí Tropical", insumo_id: 7, nombre_insumo: "Pulpa de Açaí", es_obligatorio: true },
+    { id: 2, producto_id: 7, nombre_producto: "Bowl Mango Sunset", insumo_id: 3, nombre_insumo: "Mango", es_obligatorio: true },
+    { id: 3, producto_id: 8, nombre_producto: "Base de Panqueque Fit", insumo_id: 4, nombre_insumo: "Plátano", es_obligatorio: true }
 ];
 
 // ESTADO GLOBAL
@@ -710,7 +709,7 @@ async function cargarControlInventario() {
 
     filtrarSeleccionInsumos();
     filtrarSeleccionProductos();
-    renderizarControlRecetas((inventarioDataAdmin && inventarioDataAdmin.recetas_dependencias) ? inventarioDataAdmin.recetas_dependencias : RECETAS_FALLBACK);
+    renderizarControlRecetas((inventarioDataAdmin && inventarioDataAdmin.recetas_dependencias && inventarioDataAdmin.recetas_dependencias.length > 0) ? inventarioDataAdmin.recetas_dependencias : RECETAS_FALLBACK);
 }
 
 function filtrarSeleccionInsumos() {
@@ -748,8 +747,7 @@ function renderizarControlInsumos(lista) {
     if (!container) return;
 
     if (!lista || lista.length === 0) {
-        container.innerHTML = `<p style="color: var(--text-muted); font-size: 0.85rem;">No hay insumos en esta categoría.</p>`;
-        return;
+        lista = INSUMOS_FALLBACK;
     }
 
     container.innerHTML = lista.map(ins => `
@@ -772,8 +770,7 @@ function renderizarControlProductos(lista) {
     if (!container) return;
 
     if (!lista || lista.length === 0) {
-        container.innerHTML = `<p style="color: var(--text-muted); font-size: 0.85rem;">No hay productos en esta categoría.</p>`;
-        return;
+        lista = PRODUCTOS_FALLBACK;
     }
 
     container.innerHTML = lista.map(prod => `
@@ -796,8 +793,7 @@ function renderizarControlRecetas(lista) {
     if (!container) return;
 
     if (!lista || lista.length === 0) {
-        container.innerHTML = `<p style="color: var(--text-muted); font-size: 0.85rem;">No hay reglas de recetas.</p>`;
-        return;
+        lista = RECETAS_FALLBACK;
     }
 
     container.innerHTML = lista.map(rec => `
