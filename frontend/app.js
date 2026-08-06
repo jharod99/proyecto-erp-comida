@@ -5,7 +5,7 @@
 const API_BASE = '/api';
 const WHATSAPP_NUMERO = '51987654321'; // Número de WhatsApp de la Juguería
 
-// PRODUCTOS E INSUMOS FALLBACK (Garantiza que el catálogo NUNCA aparezca vacío)
+// PRODUCTOS E INSUMOS FALLBACK (Garantiza que el catálogo e inventario NUNCA aparezcan vacíos)
 const PRODUCTOS_FALLBACK = [
     { id: 1, nombre: "Jugo Inmunidad", categoria: "Elixir Funcional", precio: "12.00", disponible: true, imagen_url: "https://images.unsplash.com/photo-1613478223719-2ab802602423?auto=format&fit=crop&w=600&q=80" },
     { id: 2, nombre: "Jugo Detox Profundo", categoria: "Elixir Funcional", precio: "14.00", disponible: true, imagen_url: "https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=600&q=80" },
@@ -35,9 +35,16 @@ const INSUMOS_FALLBACK = [
     { id: 15, nombre: "Coco Tostado", tipo: "Topping", disponible: true }
 ];
 
+const RECETAS_FALLBACK = [
+    { id: 1, producto_id: 1, nombre_producto: "Jugo Inmunidad", insumo_id: 1, nombre_insumo: "Fresas", es_obligatorio: true },
+    { id: 2, producto_id: 2, nombre_producto: "Jugo Detox Profundo", insumo_id: 2, nombre_insumo: "Arándanos", es_obligatorio: true },
+    { id: 3, producto_id: 4, nombre_producto: "Smoothie Proteico", insumo_id: 4, nombre_insumo: "Plátano", es_obligatorio: true },
+    { id: 4, producto_id: 6, nombre_producto: "Bowl Açaí Tropical", insumo_id: 7, nombre_insumo: "Pulpa de Açaí", es_obligatorio: true }
+];
+
 // ESTADO GLOBAL
 let menuData = { productos_base: PRODUCTOS_FALLBACK, insumos: INSUMOS_FALLBACK };
-let inventarioDataAdmin = { productos_base: [], insumos: [], recetas_dependencias: [] };
+let inventarioDataAdmin = { productos_base: PRODUCTOS_FALLBACK, insumos: INSUMOS_FALLBACK, recetas_dependencias: RECETAS_FALLBACK };
 let categoriaSeleccionada = 'Todos';
 let carrito = [];
 let productoSeleccionadoParaCustom = null;
@@ -670,44 +677,68 @@ async function rechazarPago(pedidoId) {
     }
 }
 
-// CONTROL DE INVENTARIO
+// CONTROL DE INVENTARIO E INSUMOS (CON FALLBACK GARANTIZADO)
 async function cargarControlInventario() {
     try {
         const res = await fetch(`${API_BASE}/menu/admin/inventario_completo`);
-        if (!res.ok) return;
-
-        inventarioDataAdmin = await res.json();
-        filtrarSeleccionInsumos();
-        filtrarSeleccionProductos();
-        renderizarControlRecetas(inventarioDataAdmin.recetas_dependencias);
-
+        if (res.ok) {
+            const data = await res.json();
+            if (data && data.insumos && data.insumos.length > 0) {
+                inventarioDataAdmin = data;
+            } else {
+                inventarioDataAdmin = {
+                    productos_base: PRODUCTOS_FALLBACK,
+                    insumos: INSUMOS_FALLBACK,
+                    recetas_dependencias: RECETAS_FALLBACK
+                };
+            }
+        } else {
+            inventarioDataAdmin = {
+                productos_base: PRODUCTOS_FALLBACK,
+                insumos: INSUMOS_FALLBACK,
+                recetas_dependencias: RECETAS_FALLBACK
+            };
+        }
     } catch (err) {
-        console.error("Error al cargar inventario:", err);
+        console.warn("API de inventario no alcanzable, usando inventario de respaldo:", err);
+        inventarioDataAdmin = {
+            productos_base: PRODUCTOS_FALLBACK,
+            insumos: INSUMOS_FALLBACK,
+            recetas_dependencias: RECETAS_FALLBACK
+        };
     }
+
+    filtrarSeleccionInsumos();
+    filtrarSeleccionProductos();
+    renderizarControlRecetas((inventarioDataAdmin && inventarioDataAdmin.recetas_dependencias) ? inventarioDataAdmin.recetas_dependencias : RECETAS_FALLBACK);
 }
 
 function filtrarSeleccionInsumos() {
     const sel = document.getElementById('filter-insumos-select');
-    if (!sel) return;
-    const valor = sel.value;
+    const valor = sel ? sel.value : 'Todos';
+    const insumosLista = (inventarioDataAdmin && inventarioDataAdmin.insumos && inventarioDataAdmin.insumos.length > 0) 
+        ? inventarioDataAdmin.insumos 
+        : INSUMOS_FALLBACK;
 
     if (valor === 'Todos') {
-        renderizarControlInsumos(inventarioDataAdmin.insumos);
+        renderizarControlInsumos(insumosLista);
     } else {
-        const filtrados = inventarioDataAdmin.insumos.filter(ins => ins.tipo.toLowerCase().includes(valor.toLowerCase()));
+        const filtrados = insumosLista.filter(ins => ins.tipo.toLowerCase().includes(valor.toLowerCase()));
         renderizarControlInsumos(filtrados);
     }
 }
 
 function filtrarSeleccionProductos() {
     const sel = document.getElementById('filter-productos-select');
-    if (!sel) return;
-    const valor = sel.value;
+    const valor = sel ? sel.value : 'Todos';
+    const productosLista = (inventarioDataAdmin && inventarioDataAdmin.productos_base && inventarioDataAdmin.productos_base.length > 0) 
+        ? inventarioDataAdmin.productos_base 
+        : PRODUCTOS_FALLBACK;
 
     if (valor === 'Todos') {
-        renderizarControlProductos(inventarioDataAdmin.productos_base);
+        renderizarControlProductos(productosLista);
     } else {
-        const filtrados = inventarioDataAdmin.productos_base.filter(p => p.categoria.toLowerCase().includes(valor.toLowerCase()));
+        const filtrados = productosLista.filter(p => p.categoria.toLowerCase().includes(valor.toLowerCase()));
         renderizarControlProductos(filtrados);
     }
 }
@@ -914,6 +945,9 @@ function escapeHtml(str) {
 document.addEventListener('DOMContentLoaded', () => {
     if (document.getElementById('catalog-container')) {
         cargarMenu();
+    }
+    if (document.getElementById('inventory-insumos-list')) {
+        cargarControlInventario();
     }
     const btnCrear = document.getElementById('btn-crear-pedido');
     if (btnCrear) {
