@@ -3,11 +3,24 @@ from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import RedirectResponse
 
-from database import engine, Base
+from database import engine, Base, SessionLocal
+from models import ProductoBase
 from routers import menu, orders, admin, kds
+from poblar_bd import poblar_base_de_datos
 
 # Crear tablas en SQLite al iniciar
 Base.metadata.create_all(bind=engine)
+
+# Auto-poblar base de datos en inicio si está vacía (ideal para Render / producción)
+db = SessionLocal()
+try:
+    if not db.query(ProductoBase).first():
+        print("Base de datos inicial vacía detectada. Poblando automáticamente...")
+        poblar_base_de_datos()
+except Exception as e:
+    print(f"Error al verificar/poblar DB: {e}")
+finally:
+    db.close()
 
 app = FastAPI(
     title="Proyecto Coconut - API Juguería Saludable",
